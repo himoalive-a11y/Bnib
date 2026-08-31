@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ibrahim AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Amiri+Quran&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1826;
+    --panel:#152238;
+    --panel-2:#1B2C48;
+    --panel-3:#223756;
+    --gold:#C9A15A;
+    --gold-bright:#E3C583;
+    --parchment:#EFE6CE;
+    --teal:#4E9C8D;
+    --muted:#93A0B8;
+    --rule: rgba(201,161,90,0.28);
+    --danger:#C9705A;
+    --radius: 14px;
+    --font-display:'Amiri', 'Amiri Quran', serif;
+    --font-body:'Inter', system-ui, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:
+      radial-gradient(ellipse at top, rgba(201,161,90,0.06), transparent 55%),
+      var(--ink);
+    color:var(--parchment);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* Illuminated border strip — signature element */
+  .knot-rule{
+    height:9px;
+    width:100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='9' viewBox='0 0 36 9'%3E%3Cg fill='none' stroke='%23C9A15A' stroke-width='1' opacity='0.55'%3E%3Cpath d='M0 4.5 L9 0 L18 4.5 L27 0 L36 4.5'/%3E%3Cpath d='M0 4.5 L9 9 L18 4.5 L27 9 L36 4.5'/%3E%3Ccircle cx='9' cy='4.5' r='1.1' fill='%23C9A15A' stroke='none'/%3E%3Ccircle cx='27' cy='4.5' r='1.1' fill='%23C9A15A' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat:repeat-x;
+    opacity:0.9;
+  }
+
+  header{
+    padding:28px 22px 0 22px;
+    text-align:center;
+  }
+  .brand-mark{
+    width:52px;height:52px;
+    margin:0 auto 10px auto;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);
+    font-size:24px;
+    color:var(--gold-bright);
+    background:radial-gradient(circle, rgba(201,161,90,0.14), transparent 70%);
+  }
+  h1.brand{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:28px;
+    margin:0 0 4px 0;
+    letter-spacing:0.3px;
+    color:var(--parchment);
+  }
+  .tagline{
+    font-size:12.5px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    margin:0 0 16px 0;
+    font-weight:500;
+  }
+
+  .gear-btn{
+    position:absolute;
+    top:22px;
+    inset-inline-end:18px;
+    width:38px;height:38px;
+    border-radius:50%;
+    border:1px solid var(--rule);
+    background:var(--panel);
+    color:var(--muted);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    font-size:17px;
+  }
+  .gear-btn:hover{ color:var(--gold-bright); border-color:var(--gold); }
+
+  main{
+    flex:1;
+    padding:22px 18px 26px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  /* ---------- HOME VIEW ---------- */
+  .ask-hero{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px 18px;
+    border-radius:var(--radius);
+    background:linear-gradient(135deg, var(--panel-2), var(--panel));
+    border:1px solid var(--rule);
+    cursor:pointer;
+    text-align:start;
+  }
+  .ask-hero:hover{ border-color:var(--gold); }
+  .ask-hero .ico{
+    width:44px;height:44px;flex:none;
+    border-radius:10px;
+    background:rgba(201,161,90,0.14);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;color:var(--gold-bright);
+  }
+  .ask-hero .txt strong{ display:block; font-size:16px; color:var(--parchment); font-family:var(--font-display); }
+  .ask-hero .txt span{ font-size:12.5px; color:var(--muted); }
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .card{
+    padding:16px 14px;
+    border-radius:var(--radius);
+    background:var(--panel);
+    border:1px solid var(--rule);
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-height:96px;
+  }
+  .card:hover{ background:var(--panel-2); border-color:var(--gold); }
+  .card .ico{ font-size:19px; color:var(--gold-bright); }
+  .card strong{ font-size:14px; font-family:var(--font-display); color:var(--parchment); }
+  .card span{ font-size:11.5px; color:var(--muted); line-height:1.4; }
+  .card.wide{ grid-column:1 / -1; flex-direction:row; align-items:center; min-height:auto; }
+  .card.wide .txt{ display:flex; flex-direction:column; gap:2px; }
+
+  /* ---------- CHAT VIEW ---------- */
+  .chat-header{
+    display:flex; align-items:center; gap:10px;
+    padding-bottom:4px;
+  }
+  .back-btn{
+    width:34px;height:34px; border-radius:50%;
+    background:var(--panel); border:1px solid var(--rule);
+    color:var(--parchment); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex:none; font-size:15px;
+  }
+  .back-btn:hover{ border-color:var(--gold); }
+  .mode-badge{
+    display:flex; flex-direction:column;
+  }
+  .mode-badge strong{ font-family:var(--font-display); font-size:15.5px; }
+  .mode-badge span{ font-size:11px; color:var(--muted); }
+
+  .messages{
+    flex:1;
+    display:flex; flex-direction:column; gap:10px;
+    overflow-y:auto;
+    padding:6px 2px 6px 2px;
+    min-height:280px;
+  }
+  .msg{
+    max-width:86%;
+    padding:11px 13px;
+    border-radius:12px;
+    font-size:14.5px;
+    line-height:1.55;
+    white-space:pre-wrap;
+  }
+  .msg.user{
+    align-self:flex-end;
+    background:var(--gold);
+    color:#1A1408;
+    border-bottom-right-radius:4px;
+  }
+  html[dir="rtl"] .msg.user{ border-bottom-right-radius:12px; border-bottom-left-radius:4px; }
+  .msg.assistant{
+    align-self:flex-start;
+    background:var(--panel);
+    border:1px solid var(--rule);
+    color:var(--parchment);
+    border-bottom-left-radius:4px;
+  }
+  html[dir="rtl"] .msg.assistant{ border-bottom-left-radius:12px; border-bottom-right-radius:4px; }
+  .msg.system-note{
+    align-self:center;
+    background:transparent;
+    color:var(--muted);
+    font-size:12px;
+    text-align:center;
+    max-width:100%;
+  }
+  .msg.error{ border-color:var(--danger); color:#E8B7A8; }
+
+  .typing{
+    align-self:flex-start;
+    display:flex; gap:4px; padding:12px 14px;
+    background:var(--panel); border:1px solid var(--rule); border-radius:12px;
+  }
+  .typing span{
+    width:6px;height:6px;border-radius:50%;background:var(--gold-bright);
+    animation:blink 1.2s infinite ease-in-out;
+  }
+  .typing span:nth-child(2){ animation-delay:0.2s; }
+  .typing span:nth-child(3){ animation-delay:0.4s; }
+  @keyframes blink{ 0%,80%,100%{opacity:0.25;} 40%{opacity:1;} }
+
+  .composer{
+    display:flex; gap:8px; align-items:flex-end;
+    border-top:1px solid var(--rule);
+    padding-top:12px;
+    margin-top:6px;
+  }
+  textarea{
+    flex:1;
+    resize:none;
+    background:var(--panel);
+    border:1px solid var(--rule);
+    color:var(--parchment);
+    border-radius:12px;
+    padding:11px 13px;
+    font-family:var(--font-body);
+    font-size:14.5px;
+    line-height:1.4;
+    max-height:110px;
+  }
+  textarea:focus{ outline:none; border-color:var(--gold); }
+  .send-btn{
+    width:42px;height:42px; border-radius:50%; flex:none;
+    background:var(--gold); color:#1A1408; border:none;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer; font-size:16px;
+  }
+  .send-btn:disabled{ opacity:0.4; cursor:default; }
+  .send-btn:hover:not(:disabled){ background:var(--gold-bright); }
+
+  /* ---------- SETTINGS VIEW ---------- */
+  .settings-group{
+    background:var(--panel);
+    border:1px solid var(--rule);
+    border-radius:var(--radius);
+    padding:14px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .settings-group h3{
+    margin:0 0 4px 0; font-family:var(--font-display); font-size:14px; color:var(--gold-bright);
+  }
+  .lang-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .lang-chip{
+    padding:8px 14px; border-radius:20px; border:1px solid var(--rule);
+    background:var(--panel-2); color:var(--muted); font-size:13px; cursor:pointer;
+  }
+  .lang-chip.active{ border-color:var(--gold); color:var(--gold-bright); background:rgba(201,161,90,0.12); }
+  .danger-btn{
+    padding:10px 14px; border-radius:10px; border:1px solid var(--danger);
+    background:transparent; color:var(--danger); font-size:13px; cursor:pointer; text-align:start;
+  }
+  .danger-btn:hover{ background:rgba(201,112,90,0.1); }
+
+  .hidden{ display:none !important; }
+
+  ::-webkit-scrollbar{ width:6px; }
+  ::-webkit-scrollbar-thumb{ background:var(--rule); border-radius:4px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="knot-rule"></div>
+  <header>
+    <button class="gear-btn" id="gearBtn" title="Settings">⚙</button>
+    <div class="brand-mark">ا</div>
+    <h1 class="brand" id="brandTitle">Ibrahim AI</h1>
+    <p class="tagline" id="brandTagline">Learn · Understand · Grow</p>
+  </header>
+  <div class="knot-rule"></div>
+
+  <main>
+    <!-- HOME VIEW -->
+    <section id="homeView">
+      <div class="ask-hero" data-mode="ask">
+        <div class="ico">💬</div>
+        <div class="txt">
+          <strong id="askTitle">Ask Ibrahim AI</strong>
+          <span id="askSub">Anything you want to learn or understand</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card" data-mode="quran">
+          <div class="ico">📖</div>
+          <strong id="quranTitle">Qur'an</strong>
+          <span id="quranSub">Memorization, meaning, revision</span>
+        </div>
+        <div class="card" data-mode="english">
+          <div class="ico">🇬🇧</div>
+          <strong id="englishTitle">English Coach</strong>
+          <span id="englishSub">Grammar, vocabulary, practice</span>
+        </div>
+        <div class="card" data-mode="translate">
+          <div class="ico">🌍</div>
+          <strong id="translateTitle">Translate</strong>
+          <span id="translateSub">Arabic · English · French</span>
+        </div>
+        <div class="card" data-mode="study">
+          <div class="ico">📚</div>
+          <strong id="studyTitle">Study Assistant</strong>
+          <span id="studySub">Summaries, notes, study plans</span>
+        </div>
+        <div class="card wide" data-mode="growth">
+          <div class="ico">🌱</div>
+          <div class="txt">
+            <strong id="growthTitle">Personal Growth</strong>
+            <span id="growthSub">Discipline, goals, habits, time management</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAT VIEW -->
+    <section id="chatView" class="hidden" style="display:flex; flex-direction:column; flex:1;">
+      <div class="chat-header">
+        <button class="back-btn" id="backBtn">←</button>
+        <div class="mode-badge">
+          <strong id="chatModeTitle">Ask Ibrahim AI</strong>
+          <span id="chatModeSub">General help</span>
+        </div>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="composer">
+        <textarea id="composerInput" rows="1" placeholder="Type your message..."></textarea>
+        <button class="send-btn" id="sendBtn">➤</button>
+      </div>
+    </section>
+
+    <!-- SETTINGS VIEW -->
+    <section id="settingsView" class="hidden">
+      <div class="settings-group">
+        <h3 id="settingsLangLabel">Interface language</h3>
+        <div class="lang-row" id="langRow">
+          <div class="lang-chip" data-lang="en">English</div>
+          <div class="lang-chip" data-lang="ar">العربية</div>
+          <div class="lang-chip" data-lang="fr">Français</div>
+        </div>
+      </div>
+      <div class="settings-group" style="margin-top:12px;">
+        <h3 id="settingsDataLabel">Data</h3>
+        <button class="danger-btn" id="clearBtn">Clear all conversations</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+
+  // ---------- Master system prompt ----------
+  const MASTER_PROMPT = `You are Ibrahim AI, a multilingual educational and personal development assistant.
+
+Your mission is to help users learn, understand, communicate, and grow.
+
+You communicate naturally and respectfully in Arabic, English, and French. Always respond in the language the user uses, unless they request another language.
+
+Personality: intelligent but easy to understand, patient and encouraging, honest about uncertainty, practical and solution-oriented, respectful of different opinions and backgrounds, never arrogant or judgmental. Adapt your explanation to the user's level; use simple language and examples for beginners.
+
+CAPABILITIES:
+1. Quran & Islamic Learning — help with memorization, vocabulary/meanings, general explanation of verses, revision questions, memorization tests, Islamic learning. Never invent a Quran verse, Hadith, scholar quotation, or religious ruling. When discussing interpretation or rulings, clearly distinguish: Quranic text / Hadith / scholarly interpretation / your own general explanation. If uncertain about an attribution, say so instead of presenting it as certain.
+2. English Coach — correct English sentences, teach vocabulary, grammar, pronunciation, conversation practice, natural writing. When correcting a sentence, use this format:
+Correct: [correct sentence]
+Meaning: [meaning in the user's language]
+Why: [short explanation]
+3. Translator — translate naturally between Arabic, English, and French, preserving meaning, tone and context. Avoid word-for-word translation when it would be unnatural.
+4. Study Assistant — help understand lessons, summarize texts, create revision notes, generate questions, explain difficult concepts, build study plans. Use examples and step-by-step explanations when useful.
+5. Personal Development — help with discipline, time management, communication, reading, goal setting, learning habits, decision-making. Give practical actions rather than vague motivational statements.
+
+RESPONSE RULES:
+1. Understand the user's actual question before answering.
+2. Do not make information up.
+3. If information is uncertain, clearly say it is uncertain.
+4. Prefer simple explanations before advanced ones.
+5. Use examples when they make the concept clearer.
+6. Avoid unnecessarily long answers.
+7. If a task has several steps, organize them clearly.
+8. Never pretend to have performed an action you did not perform.
+9. Ask a clarification question only when genuinely necessary.
+10. Respect the user's goals and help them make progress.
+
+TEACHING METHOD for new concepts: 1) explain simply, 2) give an example, 3) give a small exercise, 4) correct the user's answer, 5) increase difficulty gradually. Your goal is not merely to give answers — it is to help the user become capable of doing the task independently.
+
+Style: clear, practical, friendly, educational, concise. Do not repeatedly say you are an AI. When appropriate, end with a small practical next step.`;
+
+  const MODE_FOCUS = {
+    ask:      "Current mode: General. Help with whatever the user asks, drawing on any of your capabilities as needed.",
+    quran:    "Current mode: Qur'an & Islamic Learning. Focus on memorization support, vocabulary, meanings, revision questions and memorization tests. Follow the Quran & Islamic Learning rules strictly.",
+    english:  "Current mode: English Coach. Focus on correcting sentences, grammar, vocabulary, pronunciation notes, and conversation practice. Use the Correct/Meaning/Why format when correcting sentences.",
+    translate:"Current mode: Translator. Focus on natural translation between Arabic, English and French. Ask which language pair if it isn't clear.",
+    study:    "Current mode: Study Assistant. Focus on summarizing, explaining, generating revision questions and study plans.",
+    growth:   "Current mode: Personal Development. Focus on discipline, time management, goal setting and habits. Give practical, concrete actions."
+  };
+
+  const MODE_META = {
+    ask:      { icon:"💬" },
+    quran:    { icon:"📖" },
+    english:  { icon:"🇬🇧" },
+    translate:{ icon:"🌍" },
+    study:    { icon:"📚" },
+    growth:   { icon:"🌱" }
+  };
+
+  // ---------- UI strings ----------
+  const STR = {
+    en:{ brand:"Ibrahim AI", tagline:"Learn · Understand · Grow",
+      askTitle:"Ask Ibrahim AI", askSub:"Anything you want to learn or understand",
+      quranTitle:"Qur'an", quranSub:"Memorization, meaning, revision",
+      englishTitle:"English Coach", englishSub:"Grammar, vocabulary, practice",
+      translateTitle:"Translate", translateSub:"Arabic · English · French",
+      studyTitle:"Study Assistant", studySub:"Summaries, notes, study plans",
+      growthTitle:"Personal Growth", growthSub:"Discipline, goals, habits, time management",
+      placeholder:"Type your message...", settingsLang:"Interface language", settingsData:"Data",
+      clear:"Clear all conversations", clearConfirm:"Clear this conversation? This can't be undone.",
+      welcome:{ ask:"Assalamu alaikum. I'm Ibrahim AI — ask me anything you'd like to learn or understand.",
+        quran:"Let's work on the Qur'an together. Tell me a surah, a verse, or ask for a revision test.",
+        english:"Let's practice English. Send me a sentence to correct, or ask about grammar or vocabulary.",
+        translate:"Send me text and tell me the target language (Arabic, English or French).",
+        study:"Share your lesson or text, and tell me what you need: a summary, notes, or a study plan.",
+        growth:"Tell me what you're working on — a habit, a goal, or a time-management challenge." },
+      subs:{ ask:"General help", quran:"Qur'an & Islamic learning", english:"English coach",
+        translate:"AR · EN · FR", study:"Study assistant", growth:"Personal development" },
+      error:"Something went wrong reaching Ibrahim AI. Please try again." },
+
+    ar:{ brand:"إبراهيم AI", tagline:"تعلّم · افهم · تطوّر",
+      askTitle:"اسأل إبراهيم AI", askSub:"أي شيء تريد تعلّمه أو فهمه",
+      quranTitle:"القرآن", quranSub:"حفظ، معاني، مراجعة",
+      englishTitle:"مدرّب الإنجليزية", englishSub:"قواعد، مفردات، تدريب",
+      translateTitle:"ترجمة", translateSub:"عربي · إنجليزي · فرنسي",
+      studyTitle:"مساعد الدراسة", studySub:"تلخيص، ملاحظات، خطط مذاكرة",
+      growthTitle:"التطوير الشخصي", growthSub:"انضباط، أهداف، عادات، إدارة الوقت",
+      placeholder:"اكتب رسالتك...", settingsLang:"لغة الواجهة", settingsData:"البيانات",
+      clear:"مسح كل المحادثات", clearConfirm:"هل تريد مسح هذه المحادثة؟ لا يمكن التراجع.",
+      welcome:{ ask:"السلام عليكم. أنا إبراهيم AI، اسألني عن أي شيء تريد تعلّمه أو فهمه.",
+        quran:"لنعمل على القرآن معًا. أخبرني بسورة أو آية، أو اطلب اختبار مراجعة.",
+        english:"لنتدرّب على الإنجليزية. أرسل لي جملة لتصحيحها أو اسأل عن قاعدة أو مفردة.",
+        translate:"أرسل لي النص وحدّد اللغة الهدف (عربي، إنجليزي، أو فرنسي).",
+        study:"شارك درسك أو نصّك، وأخبرني ماذا تحتاج: تلخيص، ملاحظات، أو خطة مذاكرة.",
+        growth:"أخبرني بما تعمل عليه: عادة، هدف، أو تحدٍّ في إدارة الوقت." },
+      subs:{ ask:"مساعدة عامة", quran:"القرآن والتعليم الإسلامي", english:"مدرّب الإنجليزية",
+        translate:"عربي · إنجليزي · فرنسي", study:"مساعد الدراسة", growth:"التطوير الشخصي" },
+      error:"حدث خطأ أثناء التواصل مع إبراهيم AI. حاول مرة أخرى." },
+
+    fr:{ brand:"Ibrahim AI", tagline:"Apprendre · Comprendre · Grandir",
+      askTitle:"Demander à Ibrahim AI", askSub:"Tout ce que vous voulez apprendre ou comprendre",
+      quranTitle:"Coran", quranSub:"Mémorisation, sens, révision",
+      englishTitle:"Coach d'anglais", englishSub:"Grammaire, vocabulaire, pratique",
+      translateTitle:"Traduire", translateSub:"Arabe · Anglais · Français",
+      studyTitle:"Assistant d'étude", studySub:"Résumés, notes, plans d'étude",
+      growthTitle:"Développement personnel", growthSub:"Discipline, objectifs, habitudes, gestion du temps",
+      placeholder:"Écrivez votre message...", settingsLang:"Langue de l'interface", settingsData:"Données",
+      clear:"Effacer toutes les conversations", clearConfirm:"Effacer cette conversation ? Action irréversible.",
+      welcome:{ ask:"Assalamu alaikum. Je suis Ibrahim AI — posez-moi vos questions.",
+        quran:"Travaillons le Coran ensemble. Indiquez une sourate, un verset, ou demandez un test de révision.",
+        english:"Pratiquons l'anglais. Envoyez une phrase à corriger, ou posez une question de grammaire.",
+        translate:"Envoyez le texte et précisez la langue cible (arabe, anglais ou français).",
+        study:"Partagez votre leçon ou texte, et dites-moi ce qu'il vous faut : résumé, notes ou plan d'étude.",
+        growth:"Dites-moi sur quoi vous travaillez : une habitude, un objectif, ou la gestion du temps." },
+      subs:{ ask:"Aide générale", quran:"Coran et enseignement islamique", english:"Coach d'anglais",
+        translate:"AR · EN · FR", study:"Assistant d'étude", growth:"Développement personnel" },
+      error:"Une erreur est survenue. Veuillez réessayer." },
+  };
+
+  // ---------- State ----------
+  let uiLang = "en";
+  let currentMode = "ask";
+  let conversations = { ask:[], quran:[], english:[], translate:[], study:[], growth:[] };
+  let sending = false;
+
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- Persistence ----------
+  async function loadState(){
+    try{
+      const s = await window.storage.get('ibrahim_settings');
+      if(s && s.value){
+        const parsed = JSON.parse(s.value);
+        if(parsed.uiLang) uiLang = parsed.uiLang;
+      }
+    }catch(e){ /* no saved settings yet */ }
+    try{
+      const c = await window.storage.get('ibrahim_conversations');
+      if(c && c.value){
+        const parsed = JSON.parse(c.value);
+        conversations = Object.assign(conversations, parsed);
+      }
+    }catch(e){ /* no saved conversations yet */ }
+  }
+  async function saveSettings(){
+    try{ await window.storage.set('ibrahim_settings', JSON.stringify({ uiLang })); }
+    catch(e){ console.error('Could not save settings', e); }
+  }
+  async function saveConversations(){
+    try{ await window.storage.set('ibrahim_conversations', JSON.stringify(conversations)); }
+    catch(e){ console.error('Could not save conversations', e); }
+  }
+
+  // ---------- Rendering ----------
+  function t(key){ return STR[uiLang][key]; }
+
+  function applyLanguage(){
+    document.documentElement.lang = uiLang;
+    document.documentElement.dir = (uiLang === 'ar') ? 'rtl' : 'ltr';
+    const s = STR[uiLang];
+    $('brandTitle').textContent = s.brand;
+    $('brandTagline').textContent = s.tagline;
+    $('askTitle').textContent = s.askTitle;
+    $('askSub').textContent = s.askSub;
+    $('quranTitle').textContent = s.quranTitle;
+    $('quranSub').textContent = s.quranSub;
+    $('englishTitle').textContent = s.englishTitle;
+    $('englishSub').textContent = s.englishSub;
+    $('translateTitle').textContent = s.translateTitle;
+    $('translateSub').textContent = s.translateSub;
+    $('studyTitle').textContent = s.studyTitle;
+    $('studySub').textContent = s.studySub;
+    $('growthTitle').textContent = s.growthTitle;
+    $('growthSub').textContent = s.growthSub;
+    $('composerInput').placeholder = s.placeholder;
+    $('settingsLangLabel').textContent = s.settingsLang;
+    $('settingsDataLabel').textContent = s.settingsData;
+    $('clearBtn').textContent = s.clear;
+    document.querySelectorAll('.lang-chip').forEach(chip=>{
+      chip.classList.toggle('active', chip.dataset.lang === uiLang);
+    });
+    if(!$('chatView').classList.contains('hidden')){
+      renderChatHeader();
+    }
+  }
+
+  function renderChatHeader(){
+    const meta = MODE_META[currentMode];
+    const s = STR[uiLang];
+    const titleMap = { ask:s.askTitle, quran:s.quranTitle, english:s.englishTitle, translate:s.translateTitle, study:s.studyTitle, growth:s.growthTitle };
+    $('chatModeTitle').textContent = meta.icon + '  ' + titleMap[currentMode];
+    $('chatModeSub').textContent = s.subs[currentMode];
+  }
+
+  function renderMessages(){
+    const box = $('messages');
+    box.innerHTML = '';
+    const conv = conversations[currentMode];
+    if(conv.length === 0){
+      const note = document.createElement('div');
+      note.className = 'msg system-note';
+      note.textContent = t('welcome')[currentMode];
+      box.appendChild(note);
+    } else {
+      conv.forEach(m=>{
+        const div = document.createElement('div');
+        div.className = 'msg ' + (m.role === 'user' ? 'user' : 'assistant');
+        div.textContent = m.content;
+        box.appendChild(div);
+      });
+    }
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function showView(view){
+    $('homeView').classList.toggle('hidden', view !== 'home');
+    $('chatView').classList.toggle('hidden', view !== 'chat');
+    $('settingsView').classList.toggle('hidden', view !== 'settings');
+  }
+
+  function openMode(mode){
+    currentMode = mode;
+    renderChatHeader();
+    renderMessages();
+    showView('chat');
+    setTimeout(()=> $('composerInput').focus(), 50);
+  }
+
+  // ---------- Chat send ----------
+  async function sendMessage(){
+    const input = $('composerInput');
+    const text = input.value.trim();
+    if(!text || sending) return;
+
+    conversations[currentMode].push({ role:'user', content:text });
+    input.value = '';
+    autoGrow(input);
+    renderMessages();
+    saveConversations();
+
+    sending = true;
+    $('sendBtn').disabled = true;
+    const box = $('messages');
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    box.appendChild(typing);
+    box.scrollTop = box.scrollHeight;
+
+    try{
+      const systemPrompt = MASTER_PROMPT + '\n\n' + MODE_FOCUS[currentMode] +
+        '\n\nThe interface language is currently set to "' + uiLang + '", but always follow the master rule: respond in the language the user actually writes in.';
+
+      const apiMessages = conversations[currentMode].map(m => ({ role: m.role, content: m.content }));
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: apiMessages
+        })
+      });
+
+      const data = await response.json();
+      typing.remove();
+
+      let replyText = '';
+      if(data && data.content){
+        replyText = data.content.map(b => b.type === 'text' ? b.text : '').filter(Boolean).join('\n');
+      }
+      if(!replyText){
+        throw new Error('Empty response');
+      }
+      conversations[currentMode].push({ role:'assistant', content: replyText });
+      renderMessages();
+      saveConversations();
+    }catch(err){
+      typing.remove();
+      const div = document.createElement('div');
+      div.className = 'msg assistant error';
+      div.textContent = t('error');
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      console.error(err);
+    }finally{
+      sending = false;
+      $('sendBtn').disabled = false;
+    }
+  }
+
+  function autoGrow(el){
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+  }
+
+  // ---------- Event wiring ----------
+  document.querySelectorAll('[data-mode]').forEach(el=>{
+    el.addEventListener('click', ()=> openMode(el.dataset.mode));
+  });
+
+  $('backBtn').addEventListener('click', ()=> showView('home'));
+  $('gearBtn').addEventListener('click', ()=> showView('settings'));
+
+  $('sendBtn').addEventListener('click', sendMessage);
+  $('composerInput').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  $('composerInput').addEventListener('input', (e)=> autoGrow(e.target));
+
+  document.querySelectorAll('.lang-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      uiLang = chip.dataset.lang;
+      applyLanguage();
+      saveSettings();
+    });
+  });
+
+  $('clearBtn').addEventListener('click', ()=>{
+    if(confirm(t('clearConfirm'))){
+      conversations = { ask:[], quran:[], english:[], translate:[], study:[], growth:[] };
+      saveConversations();
+      renderMessages();
+    }
+  });
+
+  // ---------- Init ----------
+  (async function init(){
+    await loadState();
+    applyLanguage();
+    showView('home');
+  })();
+
+})();
+</script>
+</body>
+</html>
